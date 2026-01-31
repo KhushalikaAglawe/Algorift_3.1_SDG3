@@ -6,6 +6,7 @@ import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from 
 import { Send, User, Bot, Paperclip } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Textarea } from "@/app/components/ui/textarea";
+const BACKEND_URL = "http://127.0.0.1:8000/chat"; // replace with your actual API URL
 
 // Type definition
 type Message = {
@@ -79,15 +80,51 @@ export default function ChatPage({ onBack }: { onBack: () => void }) {
     }
   };
 
-  const sendAiMessage = () => {
-    if (!aiInput.trim()) return;
+  const sendAiMessage = async () => {
+  if (!aiInput.trim()) return;
+
+  const userMessage = aiInput;
+
+  // show user message immediately
+  setAiMessages((prev) => [
+    ...prev,
+    { id: Date.now(), sender: "user", text: userMessage },
+  ]);
+  setAiInput("");
+
+  try {
+    const formData = new FormData();
+    formData.append("message", userMessage); // 🔥 REQUIRED
+
+    const res = await fetch("http://127.0.0.1:8000/chat", {
+      method: "POST",
+      body: formData, // ✅ NO headers
+    });
+
+    const data = await res.json();
+
     setAiMessages((prev) => [
       ...prev,
-      { id: Date.now(), sender: "user", text: aiInput },
-      { id: Date.now() + 1, sender: "ai", text: "Thanks for sharing. I'm analyzing your maternity data." },
+      {
+        id: Date.now() + 1,
+        sender: "ai",
+        text: data.reply || data.response || JSON.stringify(data),
+      },
     ]);
-    setAiInput("");
-  };
+  } catch (err) {
+    console.error(err);
+    setAiMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now() + 1,
+        sender: "ai",
+        text: "Sorry, I couldn't reach the AI server.",
+      },
+    ]);
+  }
+};
+
+
 
   const handleDoctorPDF = async (file: File) => {
     const user = auth.currentUser;
