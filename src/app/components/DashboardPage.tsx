@@ -32,30 +32,6 @@ export function DashboardPage({ onBack }: DashboardPageProps) {
   const [showRoutine, setShowRoutine] = useState(false);
   const [activeRoutine, setActiveRoutine] = useState("");
 
-  // --- AI FETCH LOGIC (Ye "Brain" se data layega) ---
-  const getClinicalIntelligence = async (data: any) => {
-    try {
-      const response = await fetch('/api/medical-ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sugar: data.bloodSugar,
-          bp: `${data.bpSystolic}/${data.bpDiastolic}`,
-          symptoms: data.symptoms || "None reported",
-          age: data.age || 25
-        })
-      });
-      const result = await response.json();
-      setAiData({
-        possibility: result.prediction,
-        guidance: result.steps,
-        specialist: result.specialist
-      });
-    } catch (err) {
-      console.error("AI Logic failed");
-    }
-  };
-
   useEffect(() => {
     const fetchHealthData = async () => {
       try {
@@ -118,36 +94,55 @@ export function DashboardPage({ onBack }: DashboardPageProps) {
   const currentStreak = data?.streakCount || 0;
   // --- NEW CRITICAL LOGIC END ---
 
-  const getDetailedAnalysis = () => {
-  if (!data) return "Please enter your health data for analysis.";
-  let analysis = [];
-  const sugar = Number(data.bloodSugar);
-  const bps = Number(data.bpSystolic);
+const getDetailedAnalysis = () => {
+    if (!data) return "Please enter your vitals to monitor your pregnancy journey.";
+    let analysis = [];
+    const weeks = Number(data?.weeksPregnant) || 0;
+    if (sugarVal > 0 && sugarVal < 70) {
+      analysis.push("🚨 EMERGENCY: Low sugar detected. Have a fruit juice immediately.");
+    } else if (isSugarHigh) {
+      analysis.push("⚠️ GESTATIONAL SUGAR: Your levels are above 95. Focus on protein-rich snacks.");
+    } else {
+      analysis.push("✅ Blood sugar is stable for baby's growth.");
+    }
+    if (bpSys > 0 && bpSys < 90) {
+      analysis.push("🚨 EMERGENCY: Critically low BP. Lie on your left side and call your doctor.");
+    } else if (isBPHigh) {
+      analysis.push("⚠️ BP ALERT: High BP detected. This could be a Preeclampsia sign; please rest.");
+    } else {
+      analysis.push("✅ Blood pressure is optimal for placental flow.");
+    }
+    if (weeks > 0) {
+      analysis.push(`✨ Update: You are in Week ${weeks}. Ensure you feel baby movements regularly.`);
+    }
+    return analysis.join(" ");
+  };
 
-  // Sugar Check
-  if (sugar > 0 && sugar < 50) analysis.push("🚨 CRITICAL: Blood Sugar is dangerously LOW (Shock Risk).");
-  else if (sugar > 140) analysis.push("Blood Sugar is high; focus on fiber.");
-  else analysis.push("Blood Sugar is stable.");
 
-  // BP Check (Fix for 8/67)
-  if (bps > 0 && bps < 90) analysis.push("🚨 EMERGENCY: Blood Pressure is critically LOW (Hypotension).");
-  else if (bps > 130) analysis.push("BP is elevated; watch your salt intake.");
-  else analysis.push("Blood Pressure is optimal.");
-
-  return analysis.join(" ");
-};
-
-  const getActionAdvice = () => {
-  if (!data) return "Keep tracking your vitals daily.";
-  const sugar = Number(data.bloodSugar);
-  const bps = Number(data.bpSystolic);
-
-  if (sugar > 0 && sugar < 50) return "EMERGENCY: Consume sugar immediately and call ER (Endocrinologist).";
-  if (bps > 0 && bps < 90) return "CRITICAL: Lie down, elevate legs, and contact a Cardiologist immediately.";
-  if (sugar > 400 || bps > 180) return "Emergency: Consult a doctor immediately.";
-  
-  return "Great job! Maintain your healthy lifestyle.";
-};
+  const getClinicalIntelligence = async (data: any) => {
+    try {
+      const response = await fetch('/api/medical-ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sugar: data.bloodSugar,
+          bp: `${data.bpSystolic}/${data.bpDiastolic}`,
+          symptoms: data.symptoms || "None reported",
+          age: data.age || 25,
+          weeksPregnant: data.weeksPregnant || 0, // 👈 Added this
+          isMaternity: true // 👈 Added this
+        })
+      });
+      const result = await response.json();
+      setAiData({
+        possibility: result.prediction,
+        guidance: result.steps,
+        specialist: result.specialist || "Obstetrician/Gynecologist" // Defaulting to OB-GYN
+      });
+    } catch (err) {
+      console.error("AI Logic failed");
+    }
+  };
 
   const getPredictiveLogic = () => {
     if (!data) return { p: "No Data", g: ["Waiting..."], s: "General Physician" };
@@ -189,6 +184,30 @@ export function DashboardPage({ onBack }: DashboardPageProps) {
     </div>
   );
 
+  const getActionAdvice = () => {
+    if (!data) return "Keep tracking your vitals daily for a healthy pregnancy.";
+    
+    const sugar = Number(data.bloodSugar);
+    const bps = Number(data.bpSystolic);
+    const bpd = Number(data.bpDiastolic);
+
+    // 1. Absolute Emergency Cases (Maternity Critical)
+    if ((sugar > 0 && sugar < 60) || bps > 170 || bps < 80) {
+      return "🚨 EMERGENCY: Immediate hospital visit required. Contact your Obstetrician NOW.";
+    }
+
+    // 2. High Risk Preeclampsia / Gestational Diabetes
+    if (bps >= 140 || bpd >= 90) {
+      return "⚠️ RISK: High BP detected. Rest on your left side, avoid salt, and book an urgent OB-GYN consult.";
+    }
+    
+    if (sugar > 95) {
+      return "⚠️ DIET ALERT: Sugar levels are high for pregnancy. Switch to high-protein, zero-sugar meals.";
+    }
+
+    // 3. Normal / Stable
+    return "✨ Everything looks great! Maintain hydration and don't miss your prenatal vitamins.";
+  };
 
   const dynamicHealthStats = [
     {

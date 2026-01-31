@@ -3,7 +3,8 @@ import { LandingPage } from "@/app/components/LandingPage";
 import { LoginPage } from "@/app/components/LoginPage";
 import { HealthInputPage } from "@/app/components/HealthInputPage";
 import { DashboardPage } from "@/app/components/DashboardPage";
-import { ChatPage } from "@/app/components/ChatPage";
+import ChatPage from "@/app/components/ChatPage";
+
 
 type PageType = "landing" | "login" | "health-input" | "dashboard" | "chat";
 
