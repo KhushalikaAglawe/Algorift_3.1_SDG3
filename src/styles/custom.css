@@ -1,0 +1,240 @@
+/* Glassmorphism Effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-card-dark {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Medical Pulse Animation */
+@keyframes pulse-medical {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.pulse-medical {
+  animation: pulse-medical 2s ease-in-out infinite;
+}
+
+/* Gradient Text */
+.gradient-text-medical {
+  background: linear-gradient(135deg, #1E88E5 0%, #26A69A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #1E88E5 0%, #26A69A 100%);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #1565C0 0%, #00897B 100%);
+}
+
+/* Medical Card Hover Effect */
+.medical-card-hover {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.medical-card-hover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #1E88E5, #26A69A);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.medical-card-hover:hover::before {
+  opacity: 1;
+}
+
+/* Health Meter Animation */
+@keyframes health-meter {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.health-meter-fill {
+  animation: health-meter 1.5s ease-out forwards;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Shimmer Effect for Premium Badge */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Risk Meter Gradient */
+.risk-meter-gradient {
+  background: linear-gradient(90deg, 
+    #4CAF50 0%, 
+    #8BC34A 25%, 
+    #FFC107 50%, 
+    #FF9800 75%, 
+    #F44336 100%
+  );
+}
+
+/* Medical Icon Glow */
+.medical-icon-glow {
+  filter: drop-shadow(0 0 8px rgba(30, 136, 229, 0.5));
+}
+
+/* Video Call Overlay */
+.video-call-overlay {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Chat Bubble Animations */
+@keyframes chat-appear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-message {
+  animation: chat-appear 0.3s ease-out;
+}
+
+/* Progress Bar Medical */
+.progress-medical {
+  background: linear-gradient(90deg, #1E88E5 0%, #26A69A 100%);
+  box-shadow: 0 0 10px rgba(30, 136, 229, 0.3);
+}
+
+/* Body Map Interactive */
+.body-part-interactive {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.body-part-interactive:hover {
+  filter: brightness(1.2);
+  transform: scale(1.05);
+}
+
+/* Success Checkmark Animation */
+@keyframes checkmark {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.checkmark-animation {
+  stroke-dasharray: 100;
+  animation: checkmark 0.5s ease-out forwards;
+}
+
+/* Loading Spinner Medical */
+@keyframes spin-medical {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-medical {
+  border: 3px solid rgba(30, 136, 229, 0.2);
+  border-top-color: #1E88E5;
+  border-radius: 50%;
+  animation: spin-medical 1s linear infinite;
+}
+
+/* Notification Badge Pulse */
+@keyframes badge-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 8px rgba(244, 67, 54, 0);
+  }
+}
+
+.notification-badge {
+  animation: badge-pulse 2s ease-in-out infinite;
+}
